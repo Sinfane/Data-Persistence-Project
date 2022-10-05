@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -11,10 +12,13 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text NameText;
     public GameObject GameOverText;
+    public string playerName;
     
     private bool m_Started = false;
-    private int m_Points;
+    public int m_Points;
+    public int finalScore;
     
     private bool m_GameOver = false;
 
@@ -55,9 +59,12 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            finalScore = m_Points;
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
             }
         }
     }
@@ -70,7 +77,18 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        SaveSystem.SaveData(this);
+
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
-}
+
+    public void Awake()
+    {
+        MenuUIHandler.Instance.input = playerName;
+        NameText.text = ("Best Score : " + playerName + " : " + m_Points);
+        
+    }
+    
+    }
+
